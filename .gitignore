@@ -5,3 +5,55 @@ backend/node_modules
 /node_modules
 coverage/
 .idea/
+### --- DOCKER --- ###
+# Ignore container data and local cache
+.docker/
+# Ignore locally built data volumes
+*data/
+*.data
+# Ignore secret environment variables files (CRITICAL)
+.env
+.env.*
+!.env.example
+# Ignore local docker-compose overrides
+docker-compose.override.yml
+
+### --- TERRAFORM --- ###
+# Local .terraform directories containing downloaded modules and providers
+.terraform/
+# .tfstate files contain sensitive infrastructure data and secrets
+*.tfstate
+*.tfstate.*
+# Crash log files
+crash.log
+crash.*.log
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+# Terraform CLI configuration file
+.terraformrc
+terraform.rc
+
+### --- ANSIBLE --- ###
+# Ignore local retry files created when playbooks fail
+*.retry
+# Ignore temporary files and local caches
+.ansible/
+# Ignore local vault password files (if kept locally)
+.ansible-vault-password
+*vault*.pass
+# Ignore local galaxy downloaded roles/collections paths
+roles/galaxy/
+collections/
+
+### --- GENERAL PYTHON / SCRIPT CACHES --- ###
+# Since you mentioned running scripts, ignore runtime noise
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
