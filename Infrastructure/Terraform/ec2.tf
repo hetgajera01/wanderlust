@@ -49,6 +49,16 @@ resource "aws_instance" "web_instance" {
     }
 }
 
+resource "aws_eip" "web_ip" {
+  for_each = var.Jenkins
+  instance = aws_instance.web_instance[each.key].id
+  domain = "vpc"
+
+  tags = {
+    Name = "Static-IP-${each.value.node_name}"
+  }
+}
+
 output "web_output" {
   value = {for key, instance in aws_instance.web_instance : key=>instance.public_ip}
 }

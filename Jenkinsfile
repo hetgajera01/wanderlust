@@ -1,6 +1,10 @@
 pipeline {
     agent {label 'worker'}
 
+    environment{
+        SONAR_HOME = tool "sonar"
+    }
+
     stages {
         stage('Clean up') {
             steps {
@@ -23,6 +27,15 @@ pipeline {
             steps {
                 dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'owasp'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+        stage("SonarQube: Code Analysis"){
+            steps{
+                script{
+                    withSonarQubeEnv("Sonar"){
+                    sh "$SONAR_HOME/bin/sonar-scanner -Dsonar.projectName=wanderlust -Dsonar.projectKey=wanderlust -X"
+                    }        
+                }
             }
         }
     }
