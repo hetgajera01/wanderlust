@@ -38,6 +38,39 @@ pipeline {
                 }
             }
         }
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_TOKEN'
+                )]) {
+                    sh '''
+                        echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
+                    '''
+                }
+            }
+        }
+        stage("Docker: build image"){
+            steps{
+                script{
+                    dir('frontend')
+                    {
+                        sh """
+                            docker build -t hetgajera01/wanderlust-frontend:${BUILD_NUMBER} .
+                            docker push hetgajera01/wanderlust-frontend:${BUILD_NUMBER}
+                        """
+                    }
+                    dir('backend')
+                    {
+                        sh """
+                            docker build -t hetgajera01/wanderlust-backend:${BUILD_NUMBER} .
+                            docker push hetgajera01/wanderlust-backend:${BUILD_NUMBER}
+                        """
+                    }
+                }
+            }
+        }
     }
     post {
     always {
