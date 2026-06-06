@@ -20,7 +20,7 @@ variable "Jenkins" {
       }
       "worker"={
         node_name="Jenkins-worker"
-        instance_type="t3.small"
+        instance_type="m7i-flex.large"
         volume_size=50
       }
     }
