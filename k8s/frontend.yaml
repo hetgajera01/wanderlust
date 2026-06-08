@@ -1,0 +1,25 @@
+apiVersion: app/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: wanderlust
+  labels:
+    app: frontend
+  
+spec:
+  replica: 1
+  selector:
+    matchLables:
+      app: frontend
+  template:
+    metadata:
+      name: frontend
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: hetgajera01/wanderlust-frontend
+          ports:
+            -  containersPort: 5173
+
