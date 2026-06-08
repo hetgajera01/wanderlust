@@ -1,4 +1,13 @@
-apiVersion: app/v1
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backend-secret
+  namespace: wanderlust
+type: Opaque
+stringData:
+  VITE_API_PATH: "http://backend-service:8080"
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend-deployment
@@ -7,9 +16,9 @@ metadata:
     app: frontend
   
 spec:
-  replica: 1
+  replicas: 1
   selector:
-    matchLables:
+    matchLabels:
       app: frontend
   template:
     metadata:
@@ -19,7 +28,21 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: hetgajera01/wanderlust-frontend
+          image: hetgajera01/wanderlust-frontend:31
           ports:
-            -  containersPort: 5173
-
+            -  containerPort: 5173
+---
+apiVersion: v1 
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: wanderlust
+spec:
+  type: NodePort
+  selector:
+    app: frontend
+  ports:
+    - port: 5173
+      targetPort: 5173
+      protocol: TCP
+      nodePort: 31000
