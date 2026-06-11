@@ -84,10 +84,10 @@ pipeline {
                         git config user.email "jenkins@example.com"
 
                         # Update backend image
-                        sed -i 's|image: hetgajera01/wanderlust-backend:.*|image: hetgajera01/wanderlust-backend:${BUILD_NUMBER}|g' backend-deployment.yaml
+                        sed -i 's|image: hetgajera01/wanderlust-backend:.*|image: hetgajera01/wanderlust-backend:${BUILD_NUMBER}|g' backend.yaml
 
                         # Update frontend image
-                        sed -i 's|image: hetgajera01/wanderlust-frontend:.*|image: hetgajera01/wanderlust-frontend:${BUILD_NUMBER}|g' frontend-deployment.yaml
+                        sed -i 's|image: hetgajera01/wanderlust-frontend:.*|image: hetgajera01/wanderlust-frontend:${BUILD_NUMBER}|g' frontend.yaml
 
                         git add .
 
