@@ -71,6 +71,33 @@ pipeline {
                 }
             }
         }
+        stage('Update Manifest') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'github-creds',
+                    usernameVariable: 'GIT_USER',
+                    passwordVariable: 'GIT_TOKEN'
+                )]) {
+
+                    sh """
+                        git config user.name "Jenkins"
+                        git config user.email "jenkins@example.com"
+
+                        # Update backend image
+                        sed -i 's|image: hetgajera01/wanderlust-backend:.*|image: hetgajera01/wanderlust-backend:${BUILD_NUMBER}|g' backend-deployment.yaml
+
+                        # Update frontend image
+                        sed -i 's|image: hetgajera01/wanderlust-frontend:.*|image: hetgajera01/wanderlust-frontend:${BUILD_NUMBER}|g' frontend-deployment.yaml
+
+                        git add .
+
+                        git commit -m "Update images to ${BUILD_NUMBER}" || true
+
+                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/hetgajera01/wanderlust-k8s.git HEAD:main
+                    """
+                }
+            }
+}
     }
     post {
     always {
