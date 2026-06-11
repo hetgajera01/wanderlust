@@ -71,43 +71,41 @@ pipeline {
                 }
             }
         }
-        stage('Clean up-2') {
+        stage('Checkout K8s Repo') {
             steps {
-                cleanWs()
-            }
-        }
-        stage('Code for k8s') {
-            steps {
-                git url:"https://github.com/hetgajera01/wanderlust-k8s.git", branch: "main"
-            }
-        }
-        stage('Update Manifest') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'github',
-                    usernameVariable: 'GIT_USER',
-                    passwordVariable: 'GIT_TOKEN'
-                )]) {
-
-                    sh """
-                        git config user.name "Jenkins"
-                        git config user.email "jenkins@example.com"
-
-                        # Update backend image
-                        sed -i 's|image: hetgajera01/wanderlust-backend:.*|image: hetgajera01/wanderlust-backend:${BUILD_NUMBER}|g' backend.yaml
-
-                        # Update frontend image
-                        sed -i 's|image: hetgajera01/wanderlust-frontend:.*|image: hetgajera01/wanderlust-frontend:${BUILD_NUMBER}|g' frontend.yaml
-
-                        git add .
-
-                        git commit -m "Update images to ${BUILD_NUMBER}" || true
-
-                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/hetgajera01/wanderlust-k8s.git HEAD:main
-                    """
+                dir('k8s') {
+                    git url: "https://github.com/hetgajera01/wanderlust-k8s.git",
+                        branch: "main"
                 }
             }
-}
+        }
+        stage('Update Manifests') {
+            steps {
+                dir('k8s') {
+                    withCredentials([usernamePassword(
+                        credentialsId: 'github',
+                        usernameVariable: 'GIT_USER',
+                        passwordVariable: 'GIT_TOKEN'
+                    )]) {
+
+                        sh """
+                            git config user.name "Jenkins"
+                            git config user.email "jenkins@example.com"
+
+                            sed -i 's|image: .*wanderlust-backend:.*|image: hetgajera01/wanderlust-backend:${BUILD_NUMBER}|g' backend.yaml
+
+                            sed -i 's|image: .*wanderlust-frontend:.*|image: hetgajera01/wanderlust-frontend:${BUILD_NUMBER}|g' frontend.yaml
+
+                            git add .
+
+                            git commit -m "Update images to ${BUILD_NUMBER}" || true
+
+                            git push https://${GIT_USER}:${GIT_TOKEN}@github.com/hetgajera01/wanderlust-k8s.git HEAD:main
+                        """
+                    }
+                }
+            }
+        }
     }
     post {
     always {
