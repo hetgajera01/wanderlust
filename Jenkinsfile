@@ -71,6 +71,16 @@ pipeline {
                 }
             }
         }
+        stage('Clean up') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Code for k8s') {
+            steps {
+                git url:"https://github.com/hetgajera01/wanderlust-k8s.git", branch: "main"
+            }
+        }
         stage('Update Manifest') {
             steps {
                 withCredentials([usernamePassword(
