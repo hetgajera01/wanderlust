@@ -5,7 +5,7 @@ metadata:
   namespace: wanderlust
 type: Opaque
 stringData:
-  VITE_API_PATH: "" #"http://backend-service:8080"
+  VITE_API_PATH: "http://backend-service:8080" #"http://backend-service:8080"
 ---
 apiVersion: apps/v1
 kind: Deployment
