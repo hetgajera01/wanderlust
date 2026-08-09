@@ -48,7 +48,7 @@ metadata:
   name: frontend-service 
   namespace: wanderlust
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: frontend
   ports:
