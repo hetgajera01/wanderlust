@@ -36,8 +36,6 @@ pipeline {
                     odcInstallation: 'owasp'
                 )
         
-                sh 'ls -lah'
-        
                 dependencyCheckPublisher(
                     pattern: '**/dependency-check-report.xml'
                 )
