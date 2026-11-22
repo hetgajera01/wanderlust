@@ -30,14 +30,21 @@ pipeline {
                         --scan .
                         --format XML
                         --out .
+                        --noupdate
                         --exclude **/node_modules/**
                         --exclude **/.git/**
                     ''',
                     odcInstallation: 'owasp'
                 )
         
+                sh '''
+                    echo "Checking Dependency-Check report..."
+                    find . -name "dependency-check-report.xml"
+                '''
+        
                 dependencyCheckPublisher(
-                    pattern: '**/dependency-check-report.xml'
+                    pattern: '**/dependency-check-report.xml',
+                    stopBuild: true
                 )
             }
         }
