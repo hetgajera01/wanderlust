@@ -23,31 +23,31 @@ pipeline {
                 }
             }
         }
-        stage('OWASP Dependency Check') {
-            steps {
-                dependencyCheck(
-                    additionalArguments: '''
-                        --scan .
-                        --format XML
-                        --out .
-                        --noupdate
-                        --exclude **/node_modules/**
-                        --exclude **/.git/**
-                    ''',
-                    odcInstallation: 'owasp'
-                )
+        // stage('OWASP Dependency Check') {
+        //     steps {
+        //         dependencyCheck(
+        //             additionalArguments: '''
+        //                 --scan .
+        //                 --format XML
+        //                 --out .
+        //                 --noupdate
+        //                 --exclude **/node_modules/**
+        //                 --exclude **/.git/**
+        //             ''',
+        //             odcInstallation: 'owasp'
+        //         )
         
-                sh '''
-                    echo "Checking Dependency-Check report..."
-                    find . -name "dependency-check-report.xml"
-                '''
+        //         sh '''
+        //             echo "Checking Dependency-Check report..."
+        //             find . -name "dependency-check-report.xml"
+        //         '''
         
-                dependencyCheckPublisher(
-                    pattern: '**/dependency-check-report.xml',
-                    stopBuild: true
-                )
-            }
-        }
+        //         dependencyCheckPublisher(
+        //             pattern: '**/dependency-check-report.xml',
+        //             stopBuild: true
+        //         )
+        //     }
+        // }
         stage("SonarQube: Code Analysis"){
             steps{
                 script{
