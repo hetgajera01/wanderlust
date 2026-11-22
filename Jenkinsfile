@@ -23,10 +23,24 @@ pipeline {
                 }
             }
         }
-        stage('owasp: dependency check') {
+        stage('OWASP Dependency Check') {
             steps {
-                dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'owasp'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                dependencyCheck(
+                    additionalArguments: '''
+                        --scan .
+                        --format XML
+                        --out .
+                        --exclude **/node_modules/**
+                        --exclude **/.git/**
+                    ''',
+                    odcInstallation: 'owasp'
+                )
+        
+                sh 'ls -lah'
+        
+                dependencyCheckPublisher(
+                    pattern: '**/dependency-check-report.xml'
+                )
             }
         }
         stage("SonarQube: Code Analysis"){
@@ -107,11 +121,11 @@ pipeline {
             }
         }
     }
-    post {
-    always {
-        dependencyCheckPublisher(
-            pattern: '**/dependency-check-report.xml'
-        )
-    }
+    // post {
+    // always {
+    //     dependencyCheckPublisher(
+    //         pattern: '**/dependency-check-report.xml'
+    //     )
+    // }
 }
 }
